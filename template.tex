@@ -1,0 +1,280 @@
+% ============================================================
+% TEMPLATE: Projektdokumentation (Hochschule Düsseldorf)
+% ------------------------------------------------------------
+% Kompilieren:  pdflatex -> biber -> pdflatex -> pdflatex
+% Benötigt:     lib.bib (Literatur), optional Logo-Datei
+%
+% So benutzt du das Template:
+%   1. Block "METADATEN" ausfüllen (Titel, Autoren, Modul, ...)
+%   2. Kapitel ab "INHALT" ersetzen
+%   3. KI-Nutzung im Text mit \KIfn{...}{...}{...} ausweisen --
+%      das KI-Verzeichnis (Tabelle am Ende) füllt sich automatisch.
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================
+% PAKETE
+% ============================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[left=3cm, right=3cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+\usepackage{hyperref}
+
+% APA-Zitierweise (biblatex-apa) -- mit biber kompilieren!
+\usepackage[style=apa, backend=biber]{biblatex}
+\addbibresource{lib.bib}
+
+% ============================================================
+% METADATEN  <-- HIER ANPASSEN
+% ============================================================
+\newcommand{\hochschule}{Hochschule Düsseldorf}
+\newcommand{\fachbereich}{Fachbereich Medien}
+\newcommand{\adresse}{Münsterstraße 156\\40476 Düsseldorf}
+\newcommand{\logodatei}{HSD (1).png}      % leer lassen oder Datei fehlt -> kein Logo
+
+\newcommand{\studiengang}{B.\,Sc.\ Data Science, AI und Intelligente Systeme (DAISY)}
+\newcommand{\semester}{Sommersemester 2026}
+\newcommand{\fachsemester}{2}
+
+\newcommand{\dokumenttyp}{Projektdokumentation}
+\newcommand{\titel}{Titel der Arbeit}
+\newcommand{\untertitel}{Untertitel der Arbeit}
+\newcommand{\modul}{Modulbezeichnung}
+
+\newcommand{\autoren}{%
+    Vorname Nachname (Matr.-Nr: 0000000)\\
+    Vorname Nachname (Matr.-Nr: 0000000)\\
+    Vorname Nachname (Matr.-Nr: 0000000)%
+}
+\newcommand{\betreuer}{Herr Prof.\ Vorname Nachname}
+
+\hypersetup{
+    pdftitle={\titel},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue
+}
+
+% ============================================================
+% EINSTELLUNGEN
+% ============================================================
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    columns=fullflexible,
+    keepspaces=true
+}
+\lstdefinestyle{yaml}{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    columns=fullflexible,
+    keepspaces=true,
+    backgroundcolor=\color{gray!5}
+}
+\setlength{\parskip}{6pt}
+
+% ============================================================
+% KI-VERZEICHNIS: automatische Sammlung der Prompts
+% ------------------------------------------------------------
+% \KIfn{Tool}{Prompt}{Verwendungszweck}
+%     -> Fußnote an der Textstelle + Zeile im KI-Verzeichnis
+% \KIfntext{Tool}{Prompt}{Verwendungszweck}
+%     -> wie oben, aber als \footnotetext (z.B. nach Abbildungen/
+%        Listen/Floats, wo \footnote nicht funktioniert)
+% ============================================================
+\makeatletter
+\newcommand{\kirows}{}
+\newcommand{\KIregister}[2]{%
+    \g@addto@macro\kirows{#1 & „#2" \\}%
+}
+\newcommand{\KItext}[3]{%
+    KI-Unterstützung (#1): „#2" Verwendungszweck: #3. %
+    Siehe KI-Verzeichnis, Tabelle~\ref{tab:ki-verzeichnis}.%
+}
+\newcommand{\KIfn}[3]{%
+    \KIregister{#1}{#2}%
+    \footnote{\KItext{#1}{#2}{#3}}%
+}
+\newcommand{\KIfntext}[3]{%
+    \KIregister{#1}{#2}%
+    \footnotetext{\KItext{#1}{#2}{#3}}%
+}
+\makeatother
+
+% ============================================================
+% DOKUMENT
+% ============================================================
+\begin{document}
+
+% ------------------------------------------------------------
+% TITELSEITE
+% ------------------------------------------------------------
+\begin{titlepage}
+    \begin{center}
+
+        \IfFileExists{\logodatei}{\includegraphics[width=4cm]{\logodatei}\\[1cm]}{}
+
+        {\large \hochschule}\\
+        \fachbereich\\
+        \adresse
+
+        \vfill
+
+        \textbf{Studiengang}\\[0.2cm]
+        \studiengang\\
+        \semester
+
+        \vfill
+
+        {\large \dokumenttyp}\\[0.4cm]
+        {\huge \textbf{\titel}}\\[0.3cm]
+        {\large \untertitel}\\[0.3cm]
+
+        \vfill
+
+        \textbf{\modul}\\[0.5cm]
+
+        \vfill
+
+        Vorgelegt von:\\[0.3cm]
+        \autoren\\[0.4cm]
+
+        Fachsemester: \fachsemester\\[0.2cm]
+        Betreuer: \betreuer
+
+    \end{center}
+\end{titlepage}
+
+% ------------------------------------------------------------
+% VERZEICHNISSE
+% ------------------------------------------------------------
+\newpage
+\pagenumbering{Roman}
+\tableofcontents
+
+\newpage
+\begingroup
+\makeatletter
+\section*{Abbildungs- und Tabellenverzeichnis}
+\@starttoc{lof}
+\bigskip
+\@starttoc{lot}
+\makeatother
+\endgroup
+
+\newpage
+\pagenumbering{arabic}
+
+% ============================================================
+% INHALT  <-- AB HIER ERSETZEN
+% ============================================================
+\section{Einleitung}
+
+Fließtext mit Zitat \parencite{beispielquelle2026} bzw.\ \textcite{beispielquelle2026}.
+Eine KI-Nutzung wird direkt an der Stelle ausgewiesen.\KIfn{ChatGPT}{Beispiel-Prompt im Wortlaut.}{Wofür die Ausgabe verwendet wurde}
+
+\subsection{Unterabschnitt}
+
+\subsubsection{Unter-Unterabschnitt}
+
+% --- Beispiel: Abbildung -------------------------------------
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\linewidth]{bild.png}
+%     \caption[Kurztitel für Verzeichnis]{Langtitel \parencite{quelle}}
+%     \label{fig:beispiel}
+% \end{figure}
+% \KIfntext{Gemini}{Prompt.}{Zweck}   % Fußnote nach einem Float
+
+% --- Beispiel: Tabelle ---------------------------------------
+\begin{table}[H]
+    \centering
+    \caption{Beispieltabelle}
+    \label{tab:beispiel}
+    \begin{tabular}{@{}p{3cm}p{4.8cm}p{5.7cm}@{}}
+        \toprule
+        \textbf{Kriterium} & \textbf{Option A} & \textbf{Option B} \\
+        \midrule
+        Kriterium 1 & Wert A1 & Wert B1 \\
+        Kriterium 2 & Wert A2 & Wert B2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% --- Beispiel: Aufzählungen ----------------------------------
+\begin{enumerate}
+    \item \textbf{Punkt 1:} Beschreibung.
+    \item \textbf{Punkt 2:} Beschreibung.
+\end{enumerate}
+
+\begin{description}[leftmargin=3cm, style=nextline]
+    \item[Begriff A] Erklärung.
+    \item[Begriff B] Erklärung.
+\end{description}
+
+% --- Beispiel: Code ------------------------------------------
+\begin{lstlisting}
+docker swarm init
+\end{lstlisting}
+
+\begin{lstlisting}[style=yaml]
+# beispiel.yaml
+key: value
+list:
+  - eintrag
+\end{lstlisting}
+
+\section{Hauptteil}
+
+\section{Fazit}
+
+% ============================================================
+% KI-VERZEICHNIS (wird automatisch befüllt)
+% ============================================================
+\section{KI-Verzeichnis}
+
+Sämtliche im Rahmen dieser Ausarbeitung verwendeten KI-Tools sind, analog zu den Literaturquellen, direkt an der jeweiligen Textstelle als Fußnote ausgewiesen -- mit vollständigem Prompt-Wortlaut sowie dem jeweiligen Verwendungszweck. Zur besseren Übersicht sind alle Prompts zusätzlich in Tabelle \ref{tab:ki-verzeichnis} zusammengefasst. Die inhaltliche Prüfung und Einordnung der KI-Ausgaben erfolgte in jedem Fall durch die Autor:innen.
+
+\begin{longtable}{@{}p{2.5cm}p{11.5cm}@{}}
+    \caption{Übersicht der verwendeten KI-Prompts}\label{tab:ki-verzeichnis}\\
+    \toprule
+    \textbf{Tool} & \textbf{Prompt} \\
+    \midrule
+    \endfirsthead
+    \toprule
+    \textbf{Tool} & \textbf{Prompt} \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{2}{r}{\textit{Fortsetzung auf der nächsten Seite}} \\
+    \midrule
+    \endfoot
+    \bottomrule
+    \endlastfoot
+    \kirows
+\end{longtable}
+
+% ------------------------------------------------------------
+% LITERATURVERZEICHNIS
+% ------------------------------------------------------------
+\newpage
+\printbibliography
+
+\end{document}
